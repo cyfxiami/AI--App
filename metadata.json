@@ -1,0 +1,7 @@
+{
+  "name": "AI工作台-App端",
+  "description": "AI工作台",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
