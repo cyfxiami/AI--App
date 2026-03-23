@@ -75,23 +75,6 @@ const DAILY_TASKS: CarouselItem[] = [
 
 const ACTIVE_TASKS = [
   {
-    id: 'task-1',
-    category: "资产管理",
-    title: "迪阿股份有限公司",
-    description: "上市公司迪阿股份在2026年一季度将有8亿左右银行结构性存款到期。该客户自有资金充裕，透过其他券商资管计划，存量产品业绩基准在1.6%-4.6%之间，是公司资管业务的潜在客户。请尽快安排...",
-    tags: ["1天", "商机线索", "线索跟进", "初步了解"],
-    aiAssistant: {
-      title: "智能体已为您准备好:",
-      actions: ["客户调研报告", "路演方案"]
-    },
-    actionText: "立即处理",
-    type: 'asset-management',
-    color: "bg-white",
-    accentColor: "text-blue-600",
-    icon: <Cpu className="w-3.5 h-3.5 text-white" />,
-    iconBg: "bg-blue-500"
-  },
-  {
     id: 'task-2',
     category: "财富管理",
     title: "客户李毅燃：800万闲置资金激活",
@@ -106,6 +89,7 @@ const ACTIVE_TASKS = [
     type: 'wealth-management',
     color: "bg-white",
     accentColor: "text-red-500",
+    buttonBg: "bg-red-50",
     icon: <User className="w-3.5 h-3.5 text-white" />,
     iconBg: "bg-red-500"
   },
@@ -124,6 +108,7 @@ const ACTIVE_TASKS = [
     type: 'product-sales',
     color: "bg-white",
     accentColor: "text-blue-600",
+    buttonBg: "bg-blue-50",
     icon: <BarChart3 className="w-3.5 h-3.5 text-white" />,
     iconBg: "bg-blue-600"
   },
@@ -142,8 +127,45 @@ const ACTIVE_TASKS = [
     type: 'bond-sales',
     color: "bg-white",
     accentColor: "text-red-600",
+    buttonBg: "bg-red-50",
     icon: <Briefcase className="w-3.5 h-3.5 text-white" />,
     iconBg: "bg-red-600"
+  },
+  {
+    id: 'task-new-4',
+    category: "投行智能",
+    title: "并购项目：芯源微电子尽职调查",
+    description: "芯源微电子并购案，AI辅助生成尽调报告。",
+    steps: [
+      { label: "尽调分析", subLabel: "大纲确认", status: "current", file: "尽调大纲.pdf" },
+      { label: "数据采集", subLabel: "工商/财务", status: "pending" },
+      { label: "风险分析", subLabel: "法律/合规", status: "pending" },
+      { label: "报告生成&复核", subLabel: "人工复核", status: "pending" }
+    ],
+    actionText: "去尽调",
+    type: 'investment-banking',
+    color: "bg-white",
+    accentColor: "text-blue-500",
+    buttonBg: "bg-blue-50",
+    icon: <Briefcase className="w-3.5 h-3.5 text-white" />,
+    iconBg: "bg-blue-500"
+  },
+  {
+    id: 'task-1',
+    category: "资产管理",
+    title: "迪阿股份有限公司",
+    description: "上市公司迪阿股份在2026年一季度将有8亿左右银行结构性存款到期。该客户自有资金充裕，透过其他券商资管计划，存量产品业绩基准在1.6%-4.6%之间，是公司资管业务的潜在客户。请尽快安排...",
+    tags: ["1天", "商机线索", "线索跟进", "初步了解"],
+    aiAssistant: {
+      title: "智能体已为您准备好:",
+      actions: ["客户调研报告", "路演方案"]
+    },
+    actionText: "立即处理",
+    type: 'asset-management',
+    color: "bg-white",
+    accentColor: "text-blue-600",
+    icon: <Cpu className="w-3.5 h-3.5 text-white" />,
+    iconBg: "bg-blue-500"
   },
   {
     id: 'task-5',
@@ -1615,10 +1637,18 @@ const MasonryCard = ({ item, onSelectAgent }: { item: any, onSelectAgent?: (agen
       {/* Steps (Simplified for Masonry) */}
       {item.steps && (
         <div className="space-y-1.5 mb-3">
-          {item.steps.slice(0, 2).map((step: any, sIdx: number) => (
-            <div key={sIdx} className="flex items-center space-x-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${step.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'}`} />
-              <span className="text-[9px] font-bold text-gray-600 truncate">{step.label}</span>
+          {item.steps.slice(0, 4).map((step: any, sIdx: number) => (
+            <div key={sIdx} className="flex items-center justify-between">
+              <div className="flex items-center space-x-2 min-w-0">
+                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${step.status === 'completed' ? 'bg-green-500' : step.status === 'current' ? 'bg-blue-500' : 'bg-gray-200'}`} />
+                <span className={`text-[9px] font-bold truncate ${step.status === 'pending' ? 'text-gray-300' : 'text-gray-600'}`}>{step.label}</span>
+              </div>
+              {step.file && (
+                <div className="flex items-center space-x-0.5 bg-gray-50 px-1 py-0.5 rounded border border-gray-100 flex-shrink-0 ml-1">
+                  <FileText className="w-2 h-2 text-blue-400" />
+                  <span className="text-[7px] font-bold text-blue-400 truncate max-w-[40px]">{step.file}</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -1628,7 +1658,7 @@ const MasonryCard = ({ item, onSelectAgent }: { item: any, onSelectAgent?: (agen
       <div className="mt-auto">
         <button 
           onClick={() => onSelectAgent?.({ id: item.id, name: item.category })}
-          className="w-full py-1.5 rounded-xl bg-gray-50 text-gray-600 font-bold text-[11px] flex items-center justify-center space-x-1 active:scale-95 transition-transform"
+          className={`w-full py-1.5 rounded-xl font-bold text-[11px] flex items-center justify-center space-x-1 active:scale-95 transition-transform ${item.buttonBg || 'bg-gray-50'} ${item.accentColor || 'text-gray-600'}`}
         >
           <span>{item.actionText}</span>
           <ChevronRight className="w-3 h-3" />
