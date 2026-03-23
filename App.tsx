@@ -37,6 +37,7 @@ interface ChatHistoryItem {
 // --- Constants (Moved outside to prevent re-renders) ---
 
 const AVATAR_LIST = [
+  { id: 0, name: 'AI助理', avatar: 'ai-assistant-special' },
   { id: 1, name: '资产管理', avatar: 'https://i.postimg.cc/sXhpzxhH/资产管理.png' },
   { id: 2, name: '销售交易', avatar: 'https://i.postimg.cc/zvq6Hs8r/销售交易.png' },
   { id: 3, name: '信用交易', avatar: 'https://i.postimg.cc/13PX5HgV/信用交易.png' },
@@ -736,7 +737,7 @@ const WorkbenchView = ({ onBackToAI }: { onBackToAI: () => void }) => {
               <button 
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-3 py-3 text-[13px] relative transition-colors ${activeTab === tab ? 'text-blue-500 font-bold' : 'text-gray-500'}`}
+                className={`px-3 py-3 text-[13px] relative transition-colors whitespace-nowrap ${activeTab === tab ? 'text-blue-500 font-bold' : 'text-gray-500'}`}
               >
                 {tab}
                 {activeTab === tab && (
@@ -769,21 +770,28 @@ const WorkbenchView = ({ onBackToAI }: { onBackToAI: () => void }) => {
       </div>
 
       {/* Footer Nav */}
-      <nav className="bg-white border-t border-gray-100 flex justify-around py-2 px-2 shrink-0">
-        <div className="flex flex-col items-center space-y-1 text-gray-400 cursor-pointer">
-          <MessageSquare className="w-6 h-6" />
+      <nav className="bg-white border-t border-gray-100 flex justify-around pt-0 pb-0.5 px-2 shrink-0 h-[52px]">
+        <div className="flex flex-col items-center space-y-1 text-gray-400 cursor-pointer translate-y-2.5">
+          <MessageSquare className="w-6 h-6 -mt-1" />
           <span className="text-[10px]">消息</span>
         </div>
-        <div className="flex flex-col items-center space-y-1 text-blue-500 font-medium cursor-pointer" onClick={onBackToAI}>
-          <Layout className="w-6 h-6" />
+        <div className="flex flex-col items-center space-y-1 text-blue-500 font-medium cursor-pointer translate-y-2.5">
+          <Layout className="w-6 h-6 -mt-1" />
           <span className="text-[10px]">工作台</span>
         </div>
-        <div className="flex flex-col items-center space-y-1 text-gray-400 cursor-pointer">
-          <Users className="w-6 h-6" />
+        <div className="flex flex-col items-center text-gray-400 cursor-pointer relative" onClick={onBackToAI}>
+          <div className="flex flex-col items-center -translate-y-4">
+            <div className="w-14 h-14 bg-white rounded-full shadow-[0_-4px_12px_rgba(0,0,0,0.05)] flex items-center justify-center border border-gray-50 mb-1 mt-[1px] overflow-hidden">
+              <img src="https://i.postimg.cc/QtcbS6b7/sheng-cheng-bu-men-ji-qi-ren-tu-biao-(11).png" alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col items-center space-y-1 text-gray-400 cursor-pointer translate-y-2.5">
+          <Users className="w-6 h-6 -mt-1" />
           <span className="text-[10px]">通讯录</span>
         </div>
-        <div className="flex flex-col items-center space-y-1 text-gray-400 cursor-pointer">
-          <User className="w-6 h-6" />
+        <div className="flex flex-col items-center space-y-1 text-gray-400 cursor-pointer translate-y-2.5">
+          <User className="w-6 h-6 -mt-1" />
           <span className="text-[10px]">我</span>
         </div>
       </nav>
@@ -791,7 +799,7 @@ const WorkbenchView = ({ onBackToAI }: { onBackToAI: () => void }) => {
   );
 };
 
-const ChatView = ({ messages, onBack, currentRole, roles, isRoleDropdownOpen, setIsRoleDropdownOpen, setIsSidebarOpen, chatEndRef, activeAgent, onSelectAgent, isAgentDropdownOpen, setIsAgentDropdownOpen }: any) => {
+const ChatView = ({ messages, onClose, onPullDown, currentRole, roles, isRoleDropdownOpen, setIsRoleDropdownOpen, setIsSidebarOpen, chatEndRef, activeAgent, onSelectAgent, isAgentDropdownOpen, setIsAgentDropdownOpen }: any) => {
   return (
     <div className="flex flex-col h-full bg-white">
       {/* Chat Header */}
@@ -838,7 +846,7 @@ const ChatView = ({ messages, onBack, currentRole, roles, isRoleDropdownOpen, se
                         className={`w-full px-4 py-3 flex items-center space-x-3 hover:bg-gray-50 transition-colors ${activeAgent?.id === agent.id ? 'bg-blue-50/50' : ''}`}
                       >
                         <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                          <img src={agent.avatar} alt={agent.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          <AvatarIcon avatar={agent.avatar} name={agent.name} />
                         </div>
                         <span className={`text-sm font-medium flex-1 text-left ${activeAgent?.id === agent.id ? 'text-blue-600' : 'text-gray-700'}`}>
                           {agent.name}
@@ -853,7 +861,7 @@ const ChatView = ({ messages, onBack, currentRole, roles, isRoleDropdownOpen, se
               )}
             </AnimatePresence>
 
-            <IconButton className="!p-0" onClick={onBack}>
+            <IconButton className="!p-0" onClick={onClose}>
               <X className="w-6 h-6 text-white" />
             </IconButton>
           </div>
@@ -862,7 +870,7 @@ const ChatView = ({ messages, onBack, currentRole, roles, isRoleDropdownOpen, se
           
           <div className="flex justify-center pb-2">
             <button 
-              onClick={onBack}
+              onClick={onPullDown}
               className="flex items-center space-x-1 text-white/60 text-[13px] font-medium active:scale-95 transition-transform py-1.5 px-6"
             >
               <span>下拉查看工作台</span>
@@ -877,17 +885,12 @@ const ChatView = ({ messages, onBack, currentRole, roles, isRoleDropdownOpen, se
         {messages.map((msg: any, idx: number) => (
           <div key={idx} className={`flex flex-col ${msg.type === 'user' ? 'items-end' : 'items-start'} space-y-1`}>
             <span className="text-[10px] text-gray-400 px-2">{msg.time}</span>
-            <div className={`flex items-start max-w-[90%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'} space-x-2`}>
-              {msg.type === 'ai' && (
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-white shadow-sm flex-shrink-0 mt-1">
-                  <img src={activeAgent?.avatar || AVATAR_LIST[0].avatar} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                </div>
-              )}
+            <div className={`flex items-start max-w-[90%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
               <div className={`rounded-2xl px-4 py-3 text-[14px] leading-relaxed ${
                 msg.type === 'user' 
                   ? 'bg-gray-200 text-gray-800 rounded-tr-none' 
                   : 'bg-white text-gray-800 shadow-sm rounded-tl-none border border-gray-100'
-              } ${msg.type === 'ai' ? 'ml-2' : 'mr-2'}`}>
+              }`}>
                 {msg.type === 'ai' && (
                   <div className="flex items-center space-x-1 mb-2 text-gray-400 text-[12px]">
                     <div className="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -916,7 +919,7 @@ const ChatView = ({ messages, onBack, currentRole, roles, isRoleDropdownOpen, se
               </div>
             </div>
             {msg.quickActions && (
-              <div className="flex flex-col space-y-2 mt-2 w-full max-w-[85%] ml-10">
+              <div className="flex flex-col space-y-2 mt-2 w-full max-w-[85%]">
                 {msg.quickActions.map((action: string, aIdx: number) => (
                   <button 
                     key={aIdx}
@@ -979,7 +982,33 @@ const SelectionPopup = ({ isOpen, onClose, onSelect, title, items, positionClass
   );
 };
 
-const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputValue, currentFooterRole, footerRoles, isTaskPopupOpen, setIsTaskPopupOpen, isBusinessPopupOpen, setIsBusinessPopupOpen, isSummaryPopupOpen, setIsSummaryPopupOpen, activeAgent }: any) => {
+const InputOverlay = ({ 
+  isOpen, 
+  onClose, 
+  onSend, 
+  inputValue, 
+  setInputValue, 
+  currentFooterRole, 
+  setCurrentFooterRole,
+  footerRoles, 
+  isTaskPopupOpen, 
+  setIsTaskPopupOpen, 
+  isBusinessPopupOpen, 
+  setIsBusinessPopupOpen, 
+  isSummaryPopupOpen, 
+  setIsSummaryPopupOpen, 
+  activeAgent,
+  onSelectAgent
+}: any) => {
+  const [isAgentDropdownOpen, setIsAgentDropdownOpen] = useState(false);
+  const [localRole, setLocalRole] = useState(currentFooterRole);
+
+  useEffect(() => {
+    if (isOpen) {
+      setLocalRole(currentFooterRole);
+    }
+  }, [isOpen, currentFooterRole]);
+
   const handleKeyClick = (char: string) => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(5);
@@ -1001,6 +1030,19 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
     action();
   };
 
+  const handleLocalSend = () => {
+    if (!inputValue.trim()) return;
+    
+    const selectedAgent = AVATAR_LIST.find(a => a.name === localRole);
+    if (selectedAgent) {
+      onSelectAgent(selectedAgent);
+      onSend(inputValue, selectedAgent);
+    } else {
+      setCurrentFooterRole(localRole);
+      onSend(inputValue);
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -1010,9 +1052,9 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] flex flex-col max-w-md mx-auto"
         >
-          {/* Blurred Background */}
+          {/* Transparent Background */}
           <div 
-            className="absolute inset-0 bg-white/20 backdrop-blur-md" 
+            className="absolute inset-0 bg-transparent" 
             onClick={() => {
               if (isTaskPopupOpen || isBusinessPopupOpen || isSummaryPopupOpen) {
                 setIsTaskPopupOpen(false);
@@ -1037,26 +1079,7 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
             }}
           >
              <div onClick={(e) => e.stopPropagation()} className="flex flex-col">
-                {/* FAQ Pills */}
-                <div className="flex flex-col items-start space-y-2 mb-4 px-5">
-                   {faqItems.map((item: string, idx: number) => (
-                  <motion.button
-                    key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    onClick={() => {
-                      handleAction(() => setInputValue(item));
-                    }}
-                    className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-full px-5 py-2 shadow-sm flex items-center space-x-2 active:scale-95 transition-all"
-                  >
-                    <Sparkles className="w-4 h-4 text-gray-400" />
-                    <span className="text-[13px] text-gray-600 font-medium">{item}</span>
-                  </motion.button>
-                ))}
-             </div>
-
-             {/* Quick Action Pills (Horizontal) */}
+              {/* Quick Action Pills (Horizontal) */}
              <div className="flex items-center space-x-2 px-5 mb-1.5 relative">
                <div className="relative">
                  <SelectionPopup 
@@ -1128,9 +1151,72 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
 
              {/* Input Bar */}
              <div className="px-5 mb-3">
-                <div className="bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.1)] border border-gray-100 p-1 flex items-center">
-                  <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 ml-1 flex-shrink-0">
-                    <img src={activeAgent?.avatar || AVATAR_LIST[0].avatar} alt="Agent" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <div className="bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.1)] border border-gray-100 p-1 flex items-center relative">
+                  <div className="relative">
+                    <button 
+                      onClick={() => setIsAgentDropdownOpen(!isAgentDropdownOpen)}
+                      className="w-9 h-9 rounded-full overflow-hidden bg-gray-100 ml-1 flex-shrink-0 active:scale-95 transition-transform"
+                    >
+                      {(() => {
+                        const role = footerRoles.find((r: any) => r.name === localRole);
+                        if (role) {
+                          return <AvatarIcon avatar={role.avatar} name={role.name} />;
+                        }
+                        return <AvatarIcon 
+                          avatar={activeAgent?.avatar || AVATAR_LIST[0].avatar} 
+                          name={activeAgent?.name || AVATAR_LIST[0].name} 
+                        />;
+                      })()}
+                    </button>
+
+                    {/* Agent Dropdown in Input Overlay */}
+                    <AnimatePresence>
+                      {isAgentDropdownOpen && (
+                        <>
+                          <div 
+                            className="fixed inset-0 z-[-1]" 
+                            onClick={() => setIsAgentDropdownOpen(false)}
+                          />
+                          <motion.div
+                            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: -10, scale: 1 }}
+                            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                            className="absolute bottom-full left-0 mb-4 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border border-gray-100 overflow-hidden py-2 z-[120]"
+                          >
+                            <div className="max-h-[300px] overflow-y-auto hide-scrollbar">
+                              {footerRoles.map((role: any, index: number) => (
+                                <React.Fragment key={role.name}>
+                                  <button
+                                    onClick={() => {
+                                      setLocalRole(role.name);
+                                      setIsAgentDropdownOpen(false);
+                                    }}
+                                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors active:bg-gray-100"
+                                  >
+                                    <div className="flex items-center space-x-3">
+                                      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
+                                        <AvatarIcon avatar={role.avatar} name={role.name} />
+                                      </div>
+                                      <span className={`text-[14px] font-medium ${localRole === role.name ? 'text-gray-900' : 'text-gray-600'}`}>
+                                        {role.name}
+                                      </span>
+                                    </div>
+                                    {localRole === role.name && (
+                                      <Check className="w-4 h-4 text-orange-400" strokeWidth={3} />
+                                    )}
+                                  </button>
+                                  {index < footerRoles.length - 1 && (
+                                    <div className="mx-4 h-[1px] bg-gray-50" />
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </div>
+                            {/* Triangle pointer */}
+                            <div className="absolute -bottom-2 left-6 w-4 h-4 bg-white border-b border-r border-gray-100 rotate-45" />
+                          </motion.div>
+                        </>
+                      )}
+                    </AnimatePresence>
                   </div>
                   <input 
                     autoFocus
@@ -1142,12 +1228,8 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
                   />
 
                   <div className="flex items-center space-x-2 pr-1">
-                    <IconButton className="w-9 h-9 rounded-full border border-gray-100 bg-white shadow-sm !p-0">
-                      <Plus className="w-[20px] h-[20px] text-gray-700" strokeWidth={1.5} />
-                    </IconButton>
-                    
                     <IconButton 
-                      onClick={() => handleAction(onSend)}
+                      onClick={() => handleAction(handleLocalSend)}
                       className="w-9 h-9 rounded-full bg-[#3B82F6] shadow-sm !p-0 flex items-center justify-center active:scale-95 transition-transform"
                     >
                       <Send className="w-4.5 h-4.5 text-white" />
@@ -1198,7 +1280,7 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
                    <button onClick={() => handleKeyClick('WXYZ')} className="col-span-2 bg-white h-10 rounded-md flex items-center justify-center text-[14px] font-medium text-gray-800 shadow-sm active:bg-gray-100 transition-colors">WXYZ</button>
                    
                    <button 
-                     onClick={() => handleAction(onSend)}
+                     onClick={() => handleAction(handleLocalSend)}
                      className="col-span-2 row-span-2 bg-[#9CA3AF] rounded-md flex items-center justify-center text-[14px] font-bold text-gray-800 shadow-sm active:bg-[#8B939F] active:scale-95 transition-all"
                    >
                      换行
@@ -1228,33 +1310,68 @@ const InputOverlay = ({ isOpen, onClose, faqItems, onSend, inputValue, setInputV
   );
 };
 
-const AvatarCarousel = ({ items, onSelectAgent }: { items: any[], onSelectAgent?: (agent: any) => void }) => {
+const AvatarIcon = ({ avatar, name, className = "w-full h-full" }: { avatar: string, name: string, className?: string }) => {
+  if (avatar === 'ai-assistant-special') {
+    return (
+      <img 
+        src="https://i.postimg.cc/QtcbS6b7/sheng-cheng-bu-men-ji-qi-ren-tu-biao-(11).png" 
+        alt={name} 
+        className={`${className} object-cover`} 
+        referrerPolicy="no-referrer"
+      />
+    );
+  }
   return (
-    <div className="overflow-hidden cursor-grab active:cursor-grabbing px-6">
-      <motion.div 
-        drag="x"
-        dragConstraints={{ right: 0, left: -((items.length * 84) - 320) }}
-        className="flex space-x-5 py-2"
-      >
-        {items.map((item) => (
-          <motion.div 
-            key={item.id} 
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onSelectAgent?.(item)}
-            className="flex flex-col items-center space-y-2 flex-shrink-0 cursor-pointer"
-          >
-            <div className="w-[64px] h-[64px] rounded-full border-2 border-white shadow-[0_4px_15px_rgba(0,0,0,0.1)] overflow-hidden bg-gray-50 flex items-center justify-center">
-              <img 
-                src={item.avatar} 
-                alt={item.name} 
-                className="w-full h-full object-cover" 
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <span className="text-[12px] font-bold text-gray-600 tracking-tight">{item.name}</span>
-          </motion.div>
-        ))}
-      </motion.div>
+    <img 
+      src={avatar} 
+      alt={name} 
+      className={`${className} object-cover`} 
+      referrerPolicy="no-referrer"
+    />
+  );
+};
+
+const AvatarCarousel = ({ items, onSelectAgent }: { items: any[], onSelectAgent?: (agent: any) => void }) => {
+  const aiAssistant = items.find(item => item.id === 0);
+  const otherItems = items.filter(item => item.id !== 0);
+
+  return (
+    <div className="flex items-start px-6 overflow-hidden">
+      {/* Fixed AI Assistant */}
+      {aiAssistant && (
+        <div 
+          onClick={() => onSelectAgent?.(aiAssistant)}
+          className="flex flex-col items-center space-y-2 flex-shrink-0 cursor-pointer mr-5 py-2"
+        >
+          <div className="w-[64px] h-[64px] rounded-full border-2 border-white shadow-[0_4px_15px_rgba(0,0,0,0.1)] overflow-hidden">
+             <AvatarIcon avatar={aiAssistant.avatar} name={aiAssistant.name} />
+          </div>
+          <span className="text-[12px] font-bold text-gray-900 tracking-tight">{aiAssistant.name}</span>
+        </div>
+      )}
+
+      {/* Draggable Others */}
+      <div className="flex-1 overflow-hidden cursor-grab active:cursor-grabbing">
+        <motion.div 
+          drag="x"
+          dragConstraints={{ right: 0, left: -((otherItems.length * 84) - 260) }}
+          className="flex space-x-5 py-2"
+        >
+          {otherItems.map((item) => (
+            <motion.div 
+              key={item.id} 
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onSelectAgent?.(item)}
+              className="flex flex-col items-center space-y-2 flex-shrink-0 cursor-pointer"
+            >
+              <div className="w-[64px] h-[64px] rounded-full border-2 border-white shadow-[0_4px_15px_rgba(0,0,0,0.1)] overflow-hidden bg-gray-50 flex items-center justify-center">
+                <AvatarIcon avatar={item.avatar} name={item.name} />
+              </div>
+              <span className="text-[12px] font-bold text-gray-600 tracking-tight">{item.name}</span>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 };
@@ -1758,7 +1875,6 @@ export default function App() {
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isWorkbenchActive, setIsWorkbenchActive] = useState(false);
   const [isRecommendOpen, setIsRecommendOpen] = useState(false);
-  const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState('个人');
   const [isFooterRoleOpen, setIsFooterRoleOpen] = useState(false);
@@ -1810,11 +1926,6 @@ export default function App() {
   const [isSummaryPopupOpen, setIsSummaryPopupOpen] = useState(false);
   const [isAgentDropdownOpen, setIsAgentDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const faqItems = [
-    "帮我制定一个私行会员转化的营销方案",
-    "如何利用AI优化机构客户的量化交易算法？",
-    "帮我分析一下迪阿股份的一季报核心数据"
-  ];
 
   const roles = [
     { name: '个人', icon: User },
@@ -2154,10 +2265,16 @@ export default function App() {
           >
             <ChatView 
               messages={activeAgent ? (agentChats[activeAgent.id] || []) : chatMessages} 
-              onBack={() => {
+              onClose={() => {
                 setIsChatActive(false);
                 setActiveAgent(null);
+                setIsWorkbenchActive(true);
               }} 
+              onPullDown={() => {
+                setIsChatActive(false);
+                setActiveAgent(null);
+                setIsWorkbenchActive(false);
+              }}
               activeAgent={activeAgent}
               onSelectAgent={handleSelectAgent}
               isAgentDropdownOpen={isAgentDropdownOpen}
@@ -2242,9 +2359,6 @@ export default function App() {
         <section className="px-2 relative overflow-visible">
           <div className="flex items-center justify-between px-4 mb-3">
             <h2 className="text-[18px] font-black text-gray-900 tracking-tight">今日任务</h2>
-            <IconButton className="!p-0">
-              <MoreHorizontal className="w-6 h-6 text-blue-500" />
-            </IconButton>
           </div>
           <MasonryTasks 
             items={activeTasks} 
@@ -2415,7 +2529,7 @@ export default function App() {
                           >
                             <div className="flex items-center space-x-3">
                               <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
-                                <img src={role.avatar} alt={role.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                                <AvatarIcon avatar={role.avatar} name={role.name} />
                               </div>
                               <span className={`text-[14px] font-medium ${currentFooterRole === role.name ? 'text-gray-900' : 'text-gray-600'}`}>
                                 {role.name}
@@ -2444,8 +2558,8 @@ export default function App() {
             >
                {(() => {
                  const role = footerRoles.find(r => r.name === currentFooterRole);
-                 if (role?.avatar) {
-                   return <img src={role.avatar} alt={role.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />;
+                 if (role) {
+                   return <AvatarIcon avatar={role.avatar} name={role.name} />;
                  }
                  return <User className="w-5 h-5 text-gray-600" strokeWidth={2} />;
                })()}
@@ -2458,20 +2572,12 @@ export default function App() {
               className="flex-1 bg-transparent text-[14px] outline-none px-4 text-gray-800 placeholder:text-gray-400 font-medium"
             />
 
-            <div className="flex items-center space-x-2 pr-1">
+            <div className="flex items-center pr-1">
               <IconButton 
-                onClick={() => setIsVoiceInputOpen(true)}
-                className="w-10 h-10 rounded-full border border-gray-100 bg-white shadow-sm !p-0 flex items-center justify-center active:scale-95 transition-transform"
+                onClick={() => setIsInputActive(true)}
+                className="w-10 h-10 rounded-full bg-[#3B82F6] shadow-sm !p-0 flex items-center justify-center active:scale-95 transition-transform"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="translate-x-[-1px]">
-                  <circle cx="5" cy="12" r="1.5" fill="#1A1C1E"/>
-                  <path d="M11 7C12.5 8.5 12.5 15.5 11 17" stroke="#1A1C1E" strokeWidth="2.5" strokeLinecap="round"/>
-                  <path d="M17 4C20 7 20 17 17 20" stroke="#1A1C1E" strokeWidth="2.5" strokeLinecap="round"/>
-                </svg>
-              </IconButton>
-              
-              <IconButton className="w-10 h-10 rounded-full border border-gray-100 bg-white shadow-sm !p-0">
-                <Plus className="w-[22px] h-[22px] text-gray-700" strokeWidth={1.5} />
+                <Send className="w-5 h-5 text-white" />
               </IconButton>
             </div>
             </div>
@@ -2482,11 +2588,11 @@ export default function App() {
       <InputOverlay 
         isOpen={isInputActive} 
         onClose={() => setIsInputActive(false)}
-        faqItems={faqItems}
         inputValue={inputValue}
         setInputValue={setInputValue}
         onSend={handleSend}
         currentFooterRole={currentFooterRole}
+        setCurrentFooterRole={setCurrentFooterRole}
         footerRoles={footerRoles}
         isTaskPopupOpen={isTaskPopupOpen}
         setIsTaskPopupOpen={setIsTaskPopupOpen}
@@ -2495,74 +2601,8 @@ export default function App() {
         isSummaryPopupOpen={isSummaryPopupOpen}
         setIsSummaryPopupOpen={setIsSummaryPopupOpen}
         activeAgent={activeAgent}
+        onSelectAgent={handleSelectAgent}
       />
-
-      {/* Voice Input Overlay */}
-      <AnimatePresence>
-        {isVoiceInputOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center max-w-md mx-auto"
-          >
-            <button 
-              onClick={() => setIsVoiceInputOpen(false)}
-              className="absolute top-12 right-6 p-2 rounded-full bg-gray-100 text-gray-500 active:scale-90 transition-transform"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
-            <div className="flex flex-col items-center space-y-12">
-              <div className="text-center space-y-2">
-                <h3 className="text-[24px] font-bold text-gray-900">正在聆听...</h3>
-                <p className="text-[14px] text-gray-400 font-medium">请说出您的问题或指令</p>
-              </div>
-
-              {/* Waveform Animation */}
-              <div className="flex items-end justify-center space-x-1.5 h-24">
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    animate={{
-                      height: [20, 60, 30, 80, 40, 70, 20][i % 7],
-                      opacity: [0.3, 1, 0.5, 1, 0.4, 1, 0.3][i % 7]
-                    }}
-                    transition={{
-                      duration: 0.8,
-                      repeat: Infinity,
-                      repeatType: "mirror",
-                      delay: i * 0.1
-                    }}
-                    className="w-1.5 bg-blue-500 rounded-full"
-                  />
-                ))}
-              </div>
-
-              {/* Mic Button */}
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-2xl animate-pulse" />
-                <button className="relative w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center shadow-[0_12px_40px_rgba(59,130,246,0.3)] active:scale-90 transition-transform">
-                  <Mic className="w-10 h-10 text-white" strokeWidth={2.5} />
-                </button>
-              </motion.div>
-
-              <div className="pt-12">
-                <button 
-                  onClick={() => setIsVoiceInputOpen(false)}
-                  className="px-8 py-3 rounded-full bg-gray-100 text-gray-600 text-[14px] font-bold active:scale-95 transition-transform"
-                >
-                  说完了
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
