@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import Markdown from 'react-markdown';
 import { 
   Menu, User, ChevronDown, Plus, MoreHorizontal, ChevronUp, ChevronsUp, AlarmClock, FolderOpen, Quote, FileText, Layout, BarChart3, Briefcase, Mic2, X, Mic, Building2, Users, List, Image, Mail, MessageSquare, Check, Headset, Palette, Sparkles, Search, Cpu, UserCircle, Send, ThumbsUp, ThumbsDown, Copy, Share2, ArrowLeft, ArrowRight, Globe, ChevronsDown, Edit2, Pin, Trash2, ChevronLeft, ChevronRight,
-  Settings, CheckCircle2, PlusCircle, Banknote, Megaphone
+  Settings, CheckCircle2, PlusCircle, Banknote, Megaphone, Paperclip
 } from 'lucide-react';
 
 // --- Types ---
@@ -37,7 +37,6 @@ interface ChatHistoryItem {
 // --- Constants (Moved outside to prevent re-renders) ---
 
 const AVATAR_LIST = [
-  { id: 0, name: 'AI助理', avatar: 'ai-assistant-special' },
   { id: 1, name: '资产管理', avatar: 'https://i.postimg.cc/sXhpzxhH/资产管理.png' },
   { id: 2, name: '销售交易', avatar: 'https://i.postimg.cc/zvq6Hs8r/销售交易.png' },
   { id: 3, name: '信用交易', avatar: 'https://i.postimg.cc/13PX5HgV/信用交易.png' },
@@ -685,6 +684,133 @@ const ProjectHistoryView = ({ history, onBack, onNewProject, onToggleTask, onTog
   );
 };
 
+const AssetAgentView = ({ onBack }: { onBack: () => void }) => {
+  return (
+    <div className="flex flex-col h-full bg-[#F5F7FF] overflow-hidden font-sans">
+      {/* Header */}
+      <header className="px-6 pt-4 pb-2 flex justify-between items-center bg-[#F5F7FF] shrink-0 relative">
+        <IconButton className="!p-0" onClick={onBack}>
+          <ArrowLeft className="w-5 h-5 text-gray-800" />
+        </IconButton>
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
+          <span className="text-[16px] font-bold tracking-tight">
+            <span className="text-[#3B82F6]">产品销售</span>
+            <span className="text-[#FF4D4F]">超级员工</span>
+          </span>
+        </div>
+        <div className="w-5" />
+      </header>
+
+      <main className="flex-1 overflow-y-auto px-4 pb-28 hide-scrollbar">
+        {/* Top Card */}
+        <div className="bg-white rounded-[24px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] mb-4 relative overflow-hidden">
+          <div className="flex justify-between items-start mb-3">
+            <h2 className="text-[17px] font-bold text-gray-900 leading-tight pr-4">
+              现金管理方案补件协调
+            </h2>
+            <div className="bg-[#FFF1F0] text-[#FF4D4F] text-[10px] px-2 py-0.5 rounded font-medium whitespace-nowrap">
+              现金管理方案补件协调
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            <span className="bg-gray-50 text-gray-500 text-[11px] px-2 py-0.5 rounded-md border border-gray-100">3小时前</span>
+            <span className="bg-gray-50 text-gray-500 text-[11px] px-2 py-0.5 rounded-md border border-gray-100">高优先级</span>
+            <span className="bg-gray-50 text-gray-500 text-[11px] px-2 py-0.5 rounded-md border border-gray-100">处理中</span>
+            <span className="bg-gray-50 text-gray-500 text-[11px] px-2 py-0.5 rounded-md border border-gray-100">合规补件</span>
+          </div>
+
+          <p className="text-gray-500 text-[13px] leading-relaxed mb-4">
+            客户要求今日 17:00 前补齐盖章材料，并同步审批口径。
+          </p>
+
+          <div className="flex justify-end">
+            <button className="bg-[#FDF2F2] text-[#FF4D4F] text-[13px] font-bold px-4 py-1.5 rounded-full active:scale-95 transition-transform">
+              立即处理
+            </button>
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center space-x-1 mt-3">
+            <div className="w-3 h-1 bg-[#FF4D4F] rounded-full" />
+            <div className="w-1 h-1 bg-gray-200 rounded-full" />
+            <div className="w-1 h-1 bg-[#A7F3D0] rounded-full" />
+          </div>
+        </div>
+
+        {/* Three Quick Actions */}
+        <div className="flex justify-around mb-6">
+          {[
+            { label: '我的客户', icon: 'https://i.postimg.cc/QtcbS6b7/sheng-cheng-bu-men-ji-qi-ren-tu-biao-(11).png' },
+            { label: '我的任务', icon: 'https://i.postimg.cc/QtcbS6b7/sheng-cheng-bu-men-ji-qi-ren-tu-biao-(11).png' },
+            { label: '前端发起', icon: 'https://i.postimg.cc/QtcbS6b7/sheng-cheng-bu-men-ji-qi-ren-tu-biao-(11).png' },
+          ].map((item, idx) => (
+            <div key={idx} className="flex flex-col items-center space-y-1.5">
+              <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm border-2 border-white">
+                <img src={item.icon} alt={item.label} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </div>
+              <span className="text-[12px] text-gray-600 font-medium">{item.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Business Section */}
+        <div className="bg-white rounded-[24px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+          <div className="flex items-center space-x-2 mb-4">
+            <div className="w-7 h-7 bg-[#E0F2FE] rounded-lg flex items-center justify-center">
+              <Briefcase className="w-3.5 h-3.5 text-[#0EA5E9]" />
+            </div>
+            <h3 className="text-[16px] font-bold text-gray-900">资管业务</h3>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { title: '机构客户理财', desc: '定制化资管方案', icon: <Building2 className="w-4.5 h-4.5 text-[#3B82F6]" />, bg: 'bg-[#EFF6FF]' },
+              { title: '个人高净值理财', desc: '专属财富管理', icon: <UserCircle className="w-4.5 h-4.5 text-[#F97316]" />, bg: 'bg-[#FFF7ED]' },
+              { title: '同业客户理财', desc: '同业合作方案', icon: <Building2 className="w-4.5 h-4.5 text-[#10B981]" />, bg: 'bg-[#ECFDF5]' },
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-gray-50 active:bg-gray-50 transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-10 h-10 ${item.bg} rounded-full flex items-center justify-center`}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-bold text-gray-900">{item.title}</div>
+                    <div className="text-[12px] text-gray-400">{item.desc}</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Bottom Bar */}
+      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/80 backdrop-blur-md px-4 py-2 border-t border-gray-100 z-[100]">
+        <div className="flex flex-wrap gap-1.5 mb-2 overflow-x-auto hide-scrollbar whitespace-nowrap">
+          {['帮我梳理今日客户触达重点', '安排一场产品路演', '输出一份前端发起方案'].map((chip, idx) => (
+            <div key={idx} className="bg-[#F3F4F6] text-gray-600 text-[12px] px-3 py-1.5 rounded-full font-medium">
+              {chip}
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center space-x-2 bg-[#F8F9FA] rounded-full px-3 py-1.5">
+          <Paperclip className="w-4 h-4 text-gray-400" />
+          <input 
+            type="text" 
+            placeholder="请输入消息..." 
+            className="flex-1 bg-transparent border-none outline-none text-[13px] py-0.5"
+          />
+          <IconButton className="!p-0">
+            <Send className="w-4.5 h-4.5 text-[#3B82F6]" />
+          </IconButton>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const WorkbenchView = ({ onBackToAI }: { onBackToAI: () => void }) => {
   const [activeTab, setActiveTab] = useState('待处理(6)');
   
@@ -1212,6 +1338,7 @@ const InputOverlay = ({
                                     onClick={() => {
                                       setLocalRole(role.name);
                                       setIsAgentDropdownOpen(false);
+                                      onSelectAgent(role, true);
                                     }}
                                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors active:bg-gray-100"
                                   >
@@ -1245,7 +1372,7 @@ const InputOverlay = ({
                     type="text" 
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="输入指令驱动，支持@智能体" 
+                    placeholder="请输入问题" 
                     className="flex-1 bg-transparent text-[14px] outline-none px-3 text-gray-800 placeholder:text-gray-400 font-medium"
                   />
 
@@ -1902,6 +2029,8 @@ export default function App() {
     },
   ]);
 
+  const [isAssetAgentActive, setIsAssetAgentActive] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isWorkbenchActive, setIsWorkbenchActive] = useState(false);
   const [isRecommendOpen, setIsRecommendOpen] = useState(false);
@@ -1965,6 +2094,7 @@ export default function App() {
   ];
 
   const footerRoles = AVATAR_LIST.map(agent => ({
+    id: agent.id,
     name: agent.name,
     avatar: agent.avatar,
   }));
@@ -2007,7 +2137,23 @@ export default function App() {
   const [agentChats, setAgentChats] = useState<{ [key: string]: any[] }>({});
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSelectAgent = (agent: any) => {
+  const handleSelectAgent = (agent: any, isPreview: boolean = false) => {
+    if (agent.id !== 1 && typeof agent.id === 'number') {
+      setToastMessage('正在建设中，敬请期待');
+      setTimeout(() => setToastMessage(null), 2000);
+      return;
+    }
+    
+    if (isPreview) {
+      setActiveAgent(agent);
+      setCurrentFooterRole(agent.name);
+      return;
+    }
+
+    if (agent.id === 1) {
+      setIsAssetAgentActive(true);
+      return;
+    }
     setActiveAgent(agent);
     setCurrentFooterRole(agent.name);
     setIsChatActive(true);
@@ -2037,6 +2183,19 @@ export default function App() {
   const handleSend = async (text?: string, agentOverride?: any) => {
     const messageText = text || inputValue;
     const currentAgent = agentOverride || activeAgent;
+    
+    if (currentAgent?.id !== 1 && typeof currentAgent?.id === 'number') {
+      setToastMessage('正在建设中，敬请期待');
+      setTimeout(() => setToastMessage(null), 2000);
+      return;
+    }
+
+    if (currentAgent?.id === 1) {
+      setIsAssetAgentActive(true);
+      setIsInputActive(false);
+      if (!text) setInputValue('');
+      return;
+    }
     
     if (messageText.trim()) {
       const userMessageText = messageText;
@@ -2346,6 +2505,21 @@ export default function App() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {isAssetAgentActive && (
+          <motion.div
+            key="asset-agent"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="absolute inset-0 z-[90] bg-white"
+          >
+            <AssetAgentView onBack={() => setIsAssetAgentActive(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {isWorkbenchActive && (
           <motion.div
             key="workbench"
@@ -2385,10 +2559,10 @@ export default function App() {
 
         <div className="space-y-2 pt-2">
 
-        {/* 瀑布流今日任务 Section */}
+        {/* 瀑布流我的任务 Section */}
         <section className="px-2 relative overflow-visible">
           <div className="flex items-center justify-between px-4 mb-3">
-            <h2 className="text-[18px] font-black text-gray-900 tracking-tight">今日任务</h2>
+            <h2 className="text-[18px] font-black text-gray-900 tracking-tight">我的任务</h2>
           </div>
           <MasonryTasks 
             items={activeTasks} 
@@ -2551,7 +2725,7 @@ export default function App() {
                           <button
                             onClick={() => {
                               const agent = AVATAR_LIST.find(a => a.name === role.name);
-                              if (agent) handleSelectAgent(agent);
+                              if (agent) handleSelectAgent(agent, true);
                               else setCurrentFooterRole(role.name);
                               setIsFooterRoleOpen(false);
                             }}
@@ -2597,7 +2771,7 @@ export default function App() {
             
             <input 
               type="text" 
-              placeholder="输入指令驱动，支持@智能体" 
+              placeholder="请输入问题" 
               onFocus={() => setIsInputActive(true)}
               className="flex-1 bg-transparent text-[14px] outline-none px-4 text-gray-800 placeholder:text-gray-400 font-medium"
             />
@@ -2633,6 +2807,12 @@ export default function App() {
         activeAgent={activeAgent}
         onSelectAgent={handleSelectAgent}
       />
+
+      {toastMessage && (
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] bg-black/70 text-white px-6 py-3 rounded-xl text-[14px] font-medium backdrop-blur-sm animate-in fade-in zoom-in duration-200">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }
